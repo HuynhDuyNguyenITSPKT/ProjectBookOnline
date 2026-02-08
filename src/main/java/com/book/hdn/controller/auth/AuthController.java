@@ -1,9 +1,12 @@
 package com.book.hdn.controller.auth;
 
+import com.book.hdn.dto.request.UserRequest;
+import com.book.hdn.dto.response.ApiResponse;
 import com.book.hdn.entity.User;
 import com.book.hdn.repository.UserRepository;
 import com.book.hdn.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,16 +23,40 @@ public class AuthController {
     private final JwtUtil jwtUtil;
 
     @PostMapping("/register")
-    public void register(@RequestBody User user) {
+    public ResponseEntity<ApiResponse> register(@RequestBody User user) {
         user.setPassword(encoder.encode(user.getPassword()));
         user.setRole("ROLE_USER");
         repo.save(user);
+
+        return ResponseEntity.ok(
+                new ApiResponse(true, "Register success")
+        );
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody User req) {
-        User user = repo.findByUsername(req.getUsername()).orElseThrow();
-        return jwtUtil.generateToken(user.getUsername(), user.getRole());
+    public ResponseEntity<ApiResponse> login(@RequestBody UserRequest req) {
+
+        User user = repo.findByUsername(req.getUsername())
+                .orElse(null);
+
+        if (user == null) {
+            return ResponseEntity.status(401)
+                    .body(new ApiResponse(false, "User not found"));
+        }
+
+        if (!encoder.matches(req.getPassword(), user.getPassword())) {
+            return ResponseEntity.status(401)
+                    .body(new ApiResponse(false, "Password is incorrect"));
+        }
+
+        String token = jwtUtil.generateToken(
+                user.getUsername(),
+                user.getRole()
+        );
+
+        return ResponseEntity.ok(
+                new ApiResponse(true, token)
+        );
     }
 }
 

@@ -20,4 +20,6 @@ public class ComicController {
     public List<Comic> all() {
         return repo.findAll();
     }
+
+
 }

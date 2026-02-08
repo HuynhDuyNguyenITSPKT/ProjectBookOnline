@@ -1,0 +1,37 @@
+package com.book.hdn.controller.admin;
+
+
+import aj.org.objectweb.asm.commons.TryCatchBlockSorter;
+import com.book.hdn.dto.response.ApiResponse;
+import com.book.hdn.entity.User;
+import com.book.hdn.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/admin/users")
+@RequiredArgsConstructor
+public class UserController {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @GetMapping("/all")
+    public ResponseEntity<ApiResponse> getAllUsers() {
+        try {
+            List<User> users = userRepository.findAll();
+            ApiResponse apiResponse = new ApiResponse();
+            apiResponse.setData(users);
+            apiResponse.setSussess(false);
+            return ResponseEntity.ok(apiResponse);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+}
