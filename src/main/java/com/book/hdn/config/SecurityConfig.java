@@ -29,6 +29,10 @@ public class SecurityConfig {
                         // PUBLIC
                         .requestMatchers("/api/comics/**", "/api/chapters/**", "/api/pages/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**"
+                        ).permitAll()
 
                         //USER
                         .requestMatchers("/api/comments/**").hasAnyRole("USER", "ADMIN")

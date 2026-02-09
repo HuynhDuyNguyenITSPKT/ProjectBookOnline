@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/admin/users")
@@ -26,9 +28,11 @@ public class UserController {
     public ResponseEntity<ApiResponse> getAllUsers() {
         try {
             List<User> users = userRepository.findAll();
+            Map<String, Object> response = new HashMap<>();
             ApiResponse apiResponse = new ApiResponse();
-            apiResponse.setData(users);
-            apiResponse.setSussess(false);
+            response.put("users", users);
+            apiResponse.setData(response);
+            apiResponse.setSussess(true);
             return ResponseEntity.ok(apiResponse);
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
