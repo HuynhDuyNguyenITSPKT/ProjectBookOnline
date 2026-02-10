@@ -8,6 +8,7 @@ import com.book.hdn.entity.Chapter;
 import com.book.hdn.entity.Comic;
 import com.book.hdn.repository.ChapterRepository;
 import com.book.hdn.repository.ComicRepository;
+import com.book.hdn.service.CommicService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,20 +22,11 @@ public class ComicsController {
 
     private final ComicRepository repo;
     private final ChapterRepository chapterRepo;
+    private final CommicService commicService;
 
     @GetMapping("/all")
     public ResponseEntity<ApiResponse> all() {
-        List<ListComicsReponse> comics = repo.findAll()
-                .stream()
-                .map(comic -> {
-                    ListComicsReponse dto = new ListComicsReponse();
-                    dto.setId(comic.getId());
-                    dto.setTitle(comic.getTitle());
-                    dto.setAuthor(comic.getAuthor());
-                    dto.setCoverImage(comic.getCoverImage());
-                    return dto;
-                })
-                .toList();
+        List<ListComicsReponse> comics = commicService.getAll();
         ApiResponse response = new ApiResponse();
         response.setSussess(true);
         response.setData(comics);

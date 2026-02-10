@@ -5,6 +5,7 @@ import com.book.hdn.dto.response.ApiResponse;
 import com.book.hdn.entity.Comic;
 import com.book.hdn.repository.ComicRepository;
 import com.book.hdn.repository.UserRepository;
+import com.book.hdn.service.CommicService;
 import com.book.hdn.service.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class ComicController {
 
     private final ComicRepository repo;
+    private final CommicService commicService;
 
     @PostMapping("/create")
     public ResponseEntity<ApiResponse> create(@RequestBody ComicsRequest comic) {
@@ -30,6 +32,7 @@ public class ComicController {
         repo.save(newComic);
         response.setSussess(true);
         response.setData(newComic);
+        commicService.clear();
         return ResponseEntity.ok(response);
     }
 
