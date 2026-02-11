@@ -23,13 +23,26 @@ public class JwtUtil {
         );
     }
 
-    public String generateToken(String username, String role) {
+    //Access Token (15 phút)
+    public String generateAccessToken(String username, String role) {
         return Jwts.builder()
                 .setSubject(username)
                 .claim("role", role)
                 .setIssuedAt(new Date())
                 .setExpiration(
-                        new Date(System.currentTimeMillis() + 86400000)
+                        new Date(System.currentTimeMillis() + 15 * 60 * 1000)
+                )
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    // Refresh Token (7 ngày)
+    public String generateRefreshToken(String username) {
+        return Jwts.builder()
+                .setSubject(username)
+                .setIssuedAt(new Date())
+                .setExpiration(
+                        new Date(System.currentTimeMillis() + 7L * 24 * 60 * 60 * 1000)
                 )
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
@@ -42,5 +55,14 @@ public class JwtUtil {
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
+    }
+
+    public boolean validateToken(String token) {
+        try {
+            extractUsername(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
