@@ -16,7 +16,7 @@ public class CommicService implements ComicInterface {
     private ComicRepository comicRepository;
 
     @Override
-    @Cacheable(value = "comics", key = "'all'")
+//    @Cacheable(value = "comics", key = "'all'")
     public List<ListComicsReponse> getAll() {
         return comicRepository.findAll()
                 .stream()
@@ -26,6 +26,7 @@ public class CommicService implements ComicInterface {
                     dto.setTitle(comic.getTitle());
                     dto.setAuthor(comic.getAuthor());
                     dto.setCoverImage(comic.getCoverImage());
+                    dto.setDescription(comic.getDescription());
                     return dto;
                 })
                 .toList();

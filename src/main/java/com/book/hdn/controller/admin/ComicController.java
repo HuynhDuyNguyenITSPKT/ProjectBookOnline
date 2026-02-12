@@ -55,6 +55,7 @@ public class ComicController {
         repo.save(existingComic);
         response.setSussess(true);
         response.setData(existingComic);
+        commicService.clear();
         return ResponseEntity.ok(response);
     }
 }
